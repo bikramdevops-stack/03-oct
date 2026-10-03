@@ -56,3 +56,11 @@ resource "azurerm_resource_group" "rgffuyyi" {
       owner ="bikrfam55"
     }
 }
+
+resource "azurerm_resource_group" "rgffutyyyyi" {
+    name="millffutti"
+    location = "east us"
+    tags = {
+      owner ="bikrttfam55"
+    }
+}
