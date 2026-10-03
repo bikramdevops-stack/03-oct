@@ -8,9 +8,9 @@ pool: mypool
 
 stages:
   - stage: scan
-    displayName: scan stage
+    displayName: scanstage
     jobs:
-      - job: scan job
+      - job: scanjob
         displayName: scanning k liye
         steps:
           - task: PowerShell@2
