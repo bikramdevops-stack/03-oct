@@ -48,3 +48,11 @@ resource "azurerm_resource_group" "rguyyi" {
       owner ="bikram55"
     }
 }
+
+resource "azurerm_resource_group" "rgffuyyi" {
+    name="millffui"
+    location = "east us"
+    tags = {
+      owner ="bikrfam55"
+    }
+}
