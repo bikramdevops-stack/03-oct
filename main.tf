@@ -26,3 +26,11 @@ resource "azurerm_resource_group" "rgu" {
       owner ="bikram4"
     }
 }
+
+resource "azurerm_resource_group" "rgui" {
+    name="millui"
+    location = "east us"
+    tags = {
+      owner ="bikram44"
+    }
+}
