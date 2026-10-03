@@ -5,6 +5,12 @@ terraform {
         version = "4.75.0"
     }
   }
+  backend "azurerm" {
+    resource_group_name = "bhakua"
+    storage_account_name = "bhakuastorage"
+    container_name = "bhakuacontainer"
+    key = "prod.tfstate"
+  }
 }
 
 provider "azurerm" {
@@ -32,5 +38,13 @@ resource "azurerm_resource_group" "rgui" {
     location = "east us"
     tags = {
       owner ="bikram44"
+    }
+}
+
+resource "azurerm_resource_group" "rguyyi" {
+    name="millui"
+    location = "east us"
+    tags = {
+      owner ="bikram55"
     }
 }
