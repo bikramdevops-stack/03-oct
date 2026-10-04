@@ -79,3 +79,11 @@ resource "azurerm_resource_group" "rgfdfutdyyyyi" {
       owner ="bikrdtdtfam55"
     }
 }
+
+resource "azurerm_resource_group" "rgfdfutddyyyyi" {
+    name="millffdddutti"
+    location = "east us"
+    tags = {
+      owner ="bikrddtdtfam55"
+    }
+}
