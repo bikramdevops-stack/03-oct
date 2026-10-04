@@ -25,6 +25,7 @@ parameters:
 stages:
   - stage: tfsec
     condition: ${{ parameters.runtfsec }}
+    dependsOn: []
     displayName: tfsec
     jobs:
       - job: 
@@ -37,6 +38,7 @@ stages:
 
   - stage: tflint
     condition: ${{ parameters.runtflint }}
+    dependsOn: []
     displayName: tflint
     jobs:
       - job: tflint
@@ -49,6 +51,7 @@ stages:
 
   - stage: infracost
     condition: ${{ parameters.runinfracost }}
+    dependsOn: []
     displayName: infracost
     jobs:
       - job: infracost
@@ -67,6 +70,7 @@ stages:
   
 
   - stage: Validate
+    dependsOn: []
     displayName: Validate
     jobs:
       - job: Validate
@@ -88,6 +92,11 @@ stages:
               command: 'validate'
 
   - stage: Plan
+    dependsOn:
+    - tfsec
+    - tflint
+    - infracost
+    - validate
     displayName: Plan
     jobs:
       - job: Plan
@@ -109,8 +118,9 @@ stages:
               command: 'plan'
               environmentServiceNameAzureRM: 'newservice'
 
-  - stage: Apply
-    displayName: Apply
+  - stage: Approval
+    dependsOn: Plan
+    displayName: Approval
     jobs:
       - job: Approval
         displayName: Approval
@@ -119,8 +129,12 @@ stages:
           - task: ManualValidation@1
             inputs:
               notifyUsers: 'sacas'
+
+  - stage: Apply
+    dependsOn: Approval
+    displayName: Apply
+    jobs:
       - job: Apply
-        dependsOn: Approval
         displayName: Apply
         steps:
           - task: TerraformTask@5
