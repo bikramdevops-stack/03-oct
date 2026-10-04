@@ -6,8 +6,25 @@ trigger:
 
 pool: mypool
 
+parameters:
+  - name: runtfsec
+    displayName: run tfsec?
+    type: boolean
+    default: false
+
+  - name: runtflint
+    displayName: run tflint?
+    type: boolean
+    default: false
+
+  - name: runinfracost
+    displayName: run infracost?
+    type: boolean
+    default: false
+
 stages:
   - stage: tfsec
+    condition: ${{ parameters.runtfsec }}
     displayName: tfsec
     jobs:
       - job: 
@@ -19,6 +36,7 @@ stages:
               script: 'tfsec'
 
   - stage: tflint
+    condition: ${{ parameters.runtflint }}
     displayName: tflint
     jobs:
       - job: tflint
@@ -30,6 +48,7 @@ stages:
               script: 'tflint --recursive --force'
 
   - stage: infracost
+    condition: ${{ parameters.runinfracost }}
     displayName: infracost
     jobs:
       - job: infracost
