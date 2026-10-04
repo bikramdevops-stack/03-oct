@@ -70,10 +70,7 @@ stages:
   
 
   - stage: Validate
-    dependsOn:
-    - tfsec
-    - tflint
-    - infracost
+    dependsOn: []
     displayName: Validate
     jobs:
       - job: Validate
