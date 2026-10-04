@@ -46,6 +46,7 @@ stages:
               targetType: 'inline'
               script: 'infracost breakdown --path .'
   
+
   - stage: Validate
     displayName: Validate
     jobs:
@@ -55,48 +56,50 @@ stages:
           - task: TerraformTask@5
             inputs:
               provider: 'azurerm'
+              command: 'init'
+              backendServiceArm: 'newservice'
+              backendAzureRmResourceGroupName: 'admin_rg'
+              backendAzureRmStorageAccountName: 'pipelinetfstate'
+              backendAzureRmContainerName: 'xyzcontainer'
+              backendAzureRmKey: 'terraform.tfstate'
+
+          - task: TerraformTask@5
+            inputs:
+              provider: 'azurerm'
               command: 'validate'
 
-  - stage: Plan 
-    displayName: Plan Stage
+  - stage: Plan
+    displayName: Plan
     jobs:
-      - job: 
-        displayName: Plan job
+      - job: Plan
+        displayName: Plan
         steps:
-          - task: TerraformInstaller@1
-            inputs:
-              terraformVersion: 'latest'
-          
           - task: TerraformTask@5
             inputs:
               provider: 'azurerm'
               command: 'init'
               backendServiceArm: 'newservice'
-              backendAzureRmStorageAccountName: 'bhakuastorage'
-              backendAzureRmContainerName: 'bhakuacontainer'
-              backendAzureRmKey: 'prod.tfstate'
- 
-
+              backendAzureRmResourceGroupName: 'admin_rg'
+              backendAzureRmStorageAccountName: 'pipelinetfstate'
+              backendAzureRmContainerName: 'xyzcontainer'
+              backendAzureRmKey: 'terraform.tfstate'
 
           - task: TerraformTask@5
             inputs:
               provider: 'azurerm'
               command: 'plan'
               environmentServiceNameAzureRM: 'newservice'
-          
+
   - stage: Apply
-    condition: and (succeeded () ,eq(variables['Build.SourceBranch'], 'refs/heads/main'))
-    displayName: Apply stage
+    displayName: Apply
     jobs:
-      
       - job: Approval
-        displayName: Manual Approval
+        displayName: Approval
         pool: server
         steps:
           - task: ManualValidation@1
             inputs:
-              notifyUsers: 'ascnja@bcka'
-
+              notifyUsers: 'sacas'
       - job: Apply
         dependsOn: Approval
         displayName: Apply
@@ -106,6 +109,13 @@ stages:
               provider: 'azurerm'
               command: 'init'
               backendServiceArm: 'newservice'
-              backendAzureRmStorageAccountName: 'bhakuastorage'
-              backendAzureRmContainerName: 'bhakuacontainer'
-              backendAzureRmKey: 'prod.tfstate'
+              backendAzureRmResourceGroupName: 'admin_rg'
+              backendAzureRmStorageAccountName: 'pipelinetfstate'
+              backendAzureRmContainerName: 'xyzcontainer'
+              backendAzureRmKey: 'terraform.tfstate'
+
+          - task: TerraformTask@5
+            inputs:
+              provider: 'azurerm'
+              command: 'apply'
+              environmentServiceNameAzureRM: 'newservice'
