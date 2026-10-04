@@ -39,6 +39,12 @@ stages:
             inputs:
               apiKey: 'ico-sqro8FlLxZss9ygbGP6Egl2USz9q8Y6Q'
               version: '0.10.x'
+
+          - task: PowerShell@2
+            displayName: Calculate Infra cost
+            inputs:
+              targetType: 'inline'
+              script: 'infracost breakdown --path .'
   
   - stage: Validate
     displayName: Validate
