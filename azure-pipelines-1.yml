@@ -4,8 +4,26 @@ trigger:
 
 pool: mypool
 
+parameters:
+  - name: tfsec
+    displayName: tfsec chalana hai??
+    type: boolean
+    default: false
+
+  - name: tflint
+    displayName: tflint chalana hai??
+    type: boolean
+    default: false
+
+  - name: infracost
+    displayName: infracost chalana hai??
+    type: boolean
+    default: false
+
+
 stages:
   - stage: tfsec
+    condition: ${{ parameters.tfsec }}
     displayName: tfsec
     jobs:
       - job: tfsec
@@ -17,6 +35,7 @@ stages:
               script: 'tfsec'
 
   - stage: tflint
+    condition: ${{ parameters.tflint }}
     displayName: tflint
     jobs:
       - job: tflint
@@ -28,6 +47,7 @@ stages:
               script: 'tflint --recursive --force'
 
   - stage: infracost
+    condition: ${{ parameters.infracost }}
     displayName: infracost
     jobs:
       - job: infracost
