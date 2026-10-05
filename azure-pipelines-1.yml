@@ -5,6 +5,45 @@ trigger:
 pool: mypool
 
 stages:
+  - stage: tfsec
+    displayName: tfsec
+    jobs:
+      - job: tfsec
+        displayName: tfsec
+        steps:
+          - task: PowerShell@2
+            inputs:
+              targetType: 'inline'
+              script: 'tfsec'
+
+  - stage: tflint
+    displayName: tflint
+    jobs:
+      - job: tflint
+        displayName: tflint
+        steps:
+          - task: PowerShell@2
+            inputs:
+              targetType: 'inline'
+              script: 'tflint --recursive --force'
+
+  - stage: infracost
+    displayName: infracost
+    jobs:
+      - job: infracost
+        displayName: infracost
+        steps:
+          - task: InfracostSetup@2
+            inputs:
+              apiKey: 'ico-sqro8FlLxZss9ygbGP6Egl2USz9q8Y6Q'
+              version: '0.10.x'
+
+          - task: PowerShell@2
+            inputs:
+              targetType: 'inline'
+              script: 'infracost breakdown --path .'
+
+
   - stage: Validate
     displayName: Validate
     jobs:
@@ -30,6 +69,15 @@ stages:
       - job: Plan
         displayName: Plan
         steps:
+
+          - task: TerraformTask@5
+            inputs:
+              provider: 'azurerm'
+              command: 'init'
+              backendServiceArm: 'newservice'
+              backendAzureRmStorageAccountName: 'pipelinetfstate'
+              backendAzureRmContainerName: 'xyzcontainer'
+              backendAzureRmKey: 'lab.tfstate'
           - task: TerraformTask@5
             inputs:
               provider: 'azurerm'
@@ -42,10 +90,10 @@ stages:
       - job: Approval
         displayName: Approval
         pool: server
-        steps:
+        steps:        
           - task: ManualValidation@1
             inputs:
-              notifyUsers: 'abcascmwlcmlcs'
+              notifyUsers: 'ascasc'
 
   - stage: Apply
     dependsOn: Approval
@@ -54,6 +102,15 @@ stages:
       - job: Apply
         displayName: Apply
         steps:
+          - task: TerraformTask@5
+            inputs:
+              provider: 'azurerm'
+              command: 'init'
+              backendServiceArm: 'newservice'
+              backendAzureRmStorageAccountName: 'pipelinetfstate'
+              backendAzureRmContainerName: 'xyzcontainer'
+              backendAzureRmKey: 'lab.tfstate'
+
           - task: TerraformTask@5
             inputs:
               provider: 'azurerm'
