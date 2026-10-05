@@ -23,6 +23,7 @@ parameters:
 
 stages:
   - stage: tfsec
+    dependsOn: []
     condition: ${{ parameters.tfsec }}
     displayName: tfsec
     jobs:
@@ -35,6 +36,7 @@ stages:
               script: 'tfsec'
 
   - stage: tflint
+    dependsOn: []
     condition: ${{ parameters.tflint }}
     displayName: tflint
     jobs:
@@ -47,6 +49,7 @@ stages:
               script: 'tflint --recursive --force'
 
   - stage: infracost
+    dependsOn: []
     condition: ${{ parameters.infracost }}
     displayName: infracost
     jobs:
@@ -65,6 +68,10 @@ stages:
 
 
   - stage: Validate
+    dependsOn: 
+    - tfsec
+    - tflint
+    - infracost
     displayName: Validate
     jobs:
       - job: Validate
@@ -84,6 +91,8 @@ stages:
               command: 'validate'
 
   - stage: Plan
+    dependsOn: 
+    - validate
     displayName: Plan
     jobs:
       - job: Plan
@@ -105,6 +114,8 @@ stages:
               environmentServiceNameAzureRM: 'newservice'
 
   - stage: Approval
+    dependsOn:
+    - plan
     displayName: Approval
     jobs:
       - job: Approval
